@@ -1,0 +1,331 @@
+---
+title: "A Case Study on Analyzing Personal Time Management and Daily Activities"
+author: "Sparsh Shrestha"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Introduction
+
+I have collected personalized data about myself on how I spend my days during my 1st and 2nd semesters. I recorded data from January 14th, 2022, to April 13th, 2022, for my 1st semester and May 9th, 2022 to June 16th, 2022, for my 2nd semester on these variables:
+
+Variables | Type
+----------------|------------------
+Date | Identifier
+Hours in Class  | Quantitative
+Hours Studying  | Quantitative
+Hours Sleeping  | Quantitative
+Number of Times Leaving the House | Quantitative
+Watching the News | Categorical
+Online Course Taken  | Categorical
+Day Satisfaction  | Categorical
+Work Hours  | Quantitative
+Semester (1st or 2nd) | Categorical
+
+The first variable is Date which is used as an identifier for each row of data. There is a total of 5 quantitative variables that I have collected for my analysis. The first quantitative variable that I collected is the hours I spent in online Zoom classes or, in-person classes. The second quantitative variable that I collected is the hours I spent studying. This variable is the sum of the hours I spent in classes, doing an assignment, and doing an online course. I am currently a student so most of my time in a day is spent studying. The third quantitative variable is the hours I spent sleeping. Since sleeping covers a lot of my time in a day, I included that data to find out how my sleep schedule affects my study hours. The fourth quantitative variable is the number of times I left the house during a day. During my first semester, I rarely went out of the house as I had just arrived in Canada and I was not used to the cold weather, and all the classes were online. But the number of times I went out of the house has increased during my second semester as the weather is nice during this time of year and in-person classes have also started. The last quantitative variable that I collected is the number of hours I spent in my job. Since I work overnights, I have to manage my time for studying, sleeping, and attending classes. So, my work hours have a huge effect on how I spent my day.
+
+I have collected a total of 4 categorical variables for this analysis. The first categorical variable that I have collected is watching the news. This variable shows if I have watched the news during that day or not. Since I don't usually watch the news. This variable mostly contains 'No' as a value. The second variable that I have collected is an online course taken during the day. Whenever I get time I like to do some self-study online to improve my skills. So, I recorded this data to find out how often I do an online course outside of my class study. The third categorical variable that I recorded is day satisfaction which is an ordinal categorical variable. Its recorded as '1', '2', and '3', where '1' means that I am not satisfied with what I have done during the day and '3' means that I am completely satisfied with how I have spent my day. The last categorical variable is 'Semester', which groups the data between my first semester (Winter2022) and second semester (Spring2022).
+
+The 5 quantitative variables sum up everything that I do in a day. I am a punctual person who likes to stick to a schedule. So, I always have a list of things that I have to do during the day. I usually complete those tasks before ending my day. So, my days usually go how I plan them. The time how I spend my day during the spring semester has changed a little compared winter semester. My work hours, sleep hours, and study hours remain the same. But in my winter semester, I had more time to do an online course, whereas most of my study time during the spring semester goes to class hours and doing an assignment, and I have spent very less time doing an online course. Additionally, the number of times I go out of the house has also increased as the weather is nice and in-person class has also started.
+
+The following table shows the summary statistics for hours spent studying, sleeping, and working.
+
+```{r echo=FALSE}
+sparsh <- read.csv(file = "Shrestha, Sparsh Personalized Data.csv", header = TRUE)
+sparsh.3vars <- subset(sparsh, select = c("Study", "Sleep", "Work.Hours"))
+summary(sparsh.3vars)
+```
+Standard Deviation for Study variable: `r round(sd(sparsh$Study), 2)`
+
+Standard Deviation for Sleep variable: `r round(sd(sparsh$Sleep), 2)`
+
+Standard Deviation for Work Variable: `r round(sd(sparsh$Work.Hours), 2)`
+
+### Assumptions and Conditions for T-distribution
+#### Identifier and Caterogiacal variable
+The date variable is an identifier. So, it is not required to check the condition for using the t-distribution on this variable. And all the categorical variables follow normal distribution so categorical variables do not meet the condition for the student's t-distribution.
+
+#### Zoom/Class
+1. Independent Assumption: This variable is independent of each other. Each value is recorded on a different day and is independent of each other. So, this condition is met.
+2. Randomization Condition: This data set has all the population data. But a random sample can be selected to meet this condition.
+3. 10% Condition: The data set contains all the population data. A random sample with 10% of all the data can be selected to meet this condition.
+4. Nearly Normal Condition: This can be confirmed using a histogram and box plot. The histogram shows that the data is uni-modal but the box-plot confirms that the data is not symmetric. So, the nearly normal condition is not met. Log transformation can be done on this data to make this condition met.
+```{r echo=FALSE}
+hist(sparsh$Zoom.Class, xlab="Zoom/Class hours", main="Number of hours spent in class")
+boxplot(sparsh$Zoom.Class, ylab="Zoom/Class hours", main="Number of hours spent in class")
+```
+
+#### Study
+1. Independent Assumption: This variable is independent of each other. Each value is recorded on a different day and is independent of each other. So, this condition is met.
+2. Randomization Condition: This data set has all the population data. But a random sample can be selected to meet this condition.
+3. 10% Condition: The data set contains all the population data. A random sample with 10% of all the data can be selected to meet this condition.
+4. Nearly Normal Condition: This can be confirmed using a histogram and box plot. The histogram and box plot shows that the data is uni-modal and symmetric. So, the nearly normal condition is met.
+```{r echo=FALSE}
+hist(sparsh$Study, xlab="Study hours", main="Number of hours spent studying")
+boxplot(sparsh$Study, ylab="Study hours", main="Number of hours spent studying")
+```
+
+#### Sleep
+1. Independent Assumption: This variable is independent of each other. Each value is recorded on a different day and is independent of each other. So, this condition is met.
+2. Randomization Condition: This data set has all the population data. But a random sample can be selected to meet this condition.
+3. 10% Condition: The data set contains all the population data. A random sample with 10% of all the data can be selected to meet this condition.
+4. Nearly Normal Condition: This can be confirmed using a histogram and box plot. The histogram and box plot shows that the data is uni-modal and symmetric. So, the nearly normal condition is met.
+```{r echo=FALSE}
+hist(sparsh$Sleep, xlab="Sleep hours", main="Number of hours spent sleeping")
+boxplot(sparsh$Sleep, ylab="Sleep hours", main="Number of hours spent sleeping")
+```
+
+#### House
+1. Independent Assumption: This variable is independent of each other. Each value is recorded on a different day and is independent of each other. So, this condition is met.
+2. Randomization Condition: This data set has all the population data. But a random sample can be selected to meet this condition.
+3. 10% Condition: The data set contains all the population data. A random sample with 10% of all the data can be selected to meet this condition.
+4. Nearly Normal Condition: This can be confirmed using a histogram and box plot. The histogram and box plot shows that the data is uni-modal but it is right-skewed. So, this condition is not met. The only way to make this condition met is to collect more data or I have to go out of the house more often.
+
+```{r echo=FALSE}
+hist(sparsh$House, xlab="Number of time I went out of the house", main="Number of time I went out of the house")
+boxplot(sparsh$House, ylab="Number of time I went out of the house", main="Number of time I went out of the house")
+```
+
+#### Work Hours
+1. Independent Assumption: This variable is independent of each other. Each value is recorded on a different day and is independent of each other. So, this condition is met.
+2. Randomization Condition: This data set has all the population data. But a random sample can be selected to meet this condition.
+3. 10% Condition: The data set contains all the population data. A random sample with 10% of all the data can be selected to meet this condition.
+4. Nearly Normal Condition: This can be confirmed using a histogram and box plot. The histogram and box plot shows that the data is uni-modal and symmetric. So, the nearly normal condition for this variable is met.
+```{r echo=FALSE}
+hist(sparsh$Work.Hours, xlab="Work Hours", main="Hours spent on job")
+boxplot(sparsh$Work.Hours, ylab="Work Hours", main="Hours spent on job")
+```
+
+## Data Analysis
+### Confidence Interval
+#### Study Variable
+```{r echo=FALSE}
+study.mean <- mean(sparsh$Study) #Mean
+study.sd <- sd(sparsh$Study) #Standard Deviation
+study.n <- length(sparsh$Study) #Sample Size
+study.ME <- study.sd / sqrt(study.n) #Margin of Error
+study.t.crit <- qt(0.975, study.n - 1) #T-critical value
+lower <- study.mean + study.t.crit * study.ME #Interval calculation
+upper <- study.mean - study.t.crit * study.ME
+```
+
+The confidence interval for the Study variable is `r round(upper, 2)` hours to `r round(lower, 2)` hours. It can be said with 95% confidence that I study from `r round(upper, 2)` hours to `r round(lower, 2)` hours a day. I am a student so most of my time is spent studying daily either in class, doing assignments or doing an online course.
+
+#### Sleep Variable
+```{r echo=FALSE}
+sleep.mean <- mean(sparsh$Sleep) #Mean
+sleep.sd <- sd(sparsh$Sleep) #Standard Deviation
+sleep.n <- length(sparsh$Sleep) #Sample Size
+sleep.ME <- sleep.sd / sqrt(sleep.n) #Margin of Error
+sleep.t.crit <- qt(0.975, sleep.n - 1) #T-critical value
+lower <- sleep.mean + sleep.t.crit * sleep.ME #Interval calculation
+upper <- sleep.mean - sleep.t.crit * sleep.ME
+```
+
+The confidence interval for the Sleep variable is `r round(upper, 2)` hours to `r round(lower, 2)` hours. It can be said with 95% confidence that I sleep from `r round(upper, 2)` hours to `r round(lower, 2)` hours a day. Since, there is a lot of classes, work, and assignment to do in a day, I sleep around `r round(upper, 2)` hours to `r round(lower, 2)` hours a day to have a fresh mindset and not be distracted during the day.
+
+#### Work Variable
+```{r echo=FALSE}
+work.mean <- mean(sparsh$Work.Hours) #Mean
+work.sd <- sd(sparsh$Work.Hours) #Standard Deviation
+work.n <- length(sparsh$Work.Hours) #Sample Size
+work.ME <- work.sd / sqrt(work.n) #Margin of Error
+work.t.crit <- qt(0.975, work.n - 1) #T-critical value
+lower <- work.mean + work.t.crit * work.ME #Interval calculation
+upper <- work.mean - work.t.crit * work.ME
+```
+
+The confidence interval for the Work variable is `r round(upper, 2)` hours to `r round(lower, 2)` hours. It can be said with 95% confidence that I work from `r round(upper, 2)` hours to `r round(lower, 2)` hours a day. I work overnights and always have fixed schedules so my day depends on how many hours I spent working in a day.
+
+### One-Sample Hypothesis Tests
+#### Study Variable
+Performing the hypothesis testing on the Study variable, if I study for more than 3.13 hours per day.
+
+Null Hypothesis $\rightarrow$ $H_0: \mu = 3.13$
+
+Alternative Hypothesis $\rightarrow$ $H_A: \mu > 3.13$
+
+```{r echo=FALSE}
+study <- t.test(sparsh$Study, mu = 3.13, alternative = "greater")
+```
+
+The p-value for performing the test at $\alpha = 0.05$ is `r study$p.value`. Since the p-value is less than the $\alpha$, we reject the null hypothesis. There is evidence that I study more than 3.13 hours per day. I do have a very tight schedule because of my classes, assignments, and work but I try to study at least 5 to 6 hours every day so I keep learning new things every day.
+
+$P-value =$ `r study$p.value` $< \alpha = 0.05$
+
+#### Sleep Variable
+Performing the hypothesis testing on the Sleep variable, if I sleep 8 hours per day or not.
+
+Null Hypothesis $\rightarrow$ $H_0: \mu = 8$
+
+Alternative Hypothesis $\rightarrow$ $H_A: \mu \neq 8$
+
+```{r echo=FALSE}
+sleep <- t.test(sparsh$Sleep, mu = 8, alternative = "two.sided")
+```
+
+The p-value for performing the test at $\alpha = 0.05$ is `r sleep$p.value`. Since the p-value is greater than the $\alpha/2$, we fail to reject the null hypothesis. There is no evidence that I sleep more or less than 8 hours per day. This means I am getting enough sleep so I don't get distracted during my work and study time.
+
+$P-value =$ `r sleep$p.value` $> \alpha/2 = 0.025$
+
+#### Work Variable
+Performing the hypothesis testing on the Work variable, if I work less than 5 hours per day or not.
+
+Null Hypothesis $\rightarrow$ $H_0: \mu = 5$
+
+Alternative Hypothesis $\rightarrow$ $H_A: \mu < 5$
+
+```{r echo=FALSE}
+work <- t.test(sparsh$Work.Hours, mu = 5, alternative = "less")
+```
+
+The p-value for performing the test at $\alpha = 0.05$ is `r work$p.value`. Since the p-value is less than the $\alpha$, we reject the null hypothesis. There is enough evidence that I work less than 5 hours per day. Since I am an international student in Canada, I am only allowed to work for 20 hours per week. Due to that I only work `r work$conf.int` hours per day.
+
+$P-value =$ `r work$p.value` $< \alpha = 0.05$
+
+### Two-Sample Hypothesis Tests
+```{r echo=FALSE}
+winter <- subset(sparsh, Semester == "Winter2022", select = Study)
+summer <- subset(sparsh, Semester == "Spring2022", select = Study)
+```
+
+#### Random Sample Hypothesis Testing
+##### Step 1: State the Hypothesis
+The hypothesis for this analysis are,
+
+Null Hypothesis $\rightarrow$ $H_0: \mu_d = \Delta_0 = 0$
+
+Alternative Hypothesis $\rightarrow$ $H_A: \mu_d > \Delta_0 = 0$
+
+##### Step 2: Assumptions and Conditions
+For this analysis, I performed the paired test hypothesis testing because it met the following requirements.
+
+1. Independent Group Assumption / Paired Data Assumption:
+The data in the Winter semester was collected based on my daily activities and the data in Spring Semester was also collected on the same variables in a different period. This means that the data are not independent of each other, they are paired data.
+
+2. Independence Assumption:
+The mean difference is independent of each other. This condition is met.
+
+3. Randomization Condition:
+I am going the collect a random sample of 10 days from each semester to test the hypothesis. So this condition is also met.
+
+4. 10% Condition:
+A random sample of 10 days will be collected for the analysis. And since the data sample is very small we can assume that the 10% condition will be met.
+
+5. Nearly Normal Condition
+The following histogram and box plot shows that this condition is met as the data is uni-modal and symmetric.
+
+```{r echo=FALSE, message = FALSE, warning = FALSE}
+library(dplyr)
+sparsh.sample <- sparsh %>% 
+  select(Date, Study, Semester) %>% # Select only the required rows
+  group_by(Semester) %>% # Group by the semester variable
+  sample_n(10) # Collect random sample of 10 variable for each group
+```
+
+```{r echo=FALSE}
+Semester.1 <- sparsh.sample %>%
+  filter(Semester == "Winter2022") # Sample from Winter Semester
+Semester.2 <- sparsh.sample %>%
+  filter(Semester == "Spring2022") # Sample from Spring Semester
+Study.diff <- Semester.1$Study - Semester.2$Study # Difference of mean
+```
+
+```{r echo=FALSE}
+# Plotting Histogram and Box-plot for the data
+hist(Study.diff, xlab="Study Hours difference", 
+     main="Differences in Study Hours in each Semester")
+boxplot(Study.diff, ylab="Study Hours difference", 
+        main="Differences in Study Hours in each Semester")
+
+```
+
+##### Step 3: The Test
+```{r echo=FALSE}
+sparsh.paired <- t.test(Semester.1$Study, Semester.2$Study,
+       alternative="greater", mu=0,
+       var.equal=FALSE,
+       paired=TRUE)
+```
+The test is done using paired t.test function as all the assumptions for the test are met.
+
+##### Step 4: Decision
+The p-value for performing the test at $\alpha = 0.05$ is `r sparsh.paired$p.value`. Since the p-value is greater than the $\alpha$, we fail to reject the null hypothesis. There is not enough evidence that I study more in the first semester compared to the second semester.
+
+$P-value =$ `r sparsh.paired$p.value` $> \alpha = 0.05$
+
+
+#### First 10 observations Sample Hypothesis Testing
+##### Step 1: State the Hypothesis
+The hypothesis for this analysis are,
+
+Null Hypothesis $\rightarrow$ $H_0: \mu_d = \Delta_0 = 0$
+
+Alternative Hypothesis $\rightarrow$ $H_A: \mu_d > \Delta_0 = 0$
+
+##### Step 2: Assumptions and Conditions
+For this analysis, I performed the paired test hypothesis testing because it met the following requirements.
+
+1. Independent Group Assumption / Paired Data Assumption:
+The data in the Winter semester was collected based on my daily activities and the data in Spring Semester was also collected on the same variables in a different period. This means that the data are not independent of each other, they are paired data.
+
+2. Independence Assumption:
+The mean difference is independent of each other. This condition is met.
+
+3. Randomization Condition:
+This hypothesis testing selects first 10 rows for the analysis. Since the data is not random, this condition is not met but I performed this analysis to see if I get a different result in the test compared to a random test.
+
+4. 10% Condition:
+A random sample of 10 days will be collected for the analysis. And since the data sample is very small we can assume that the 10% condition will be met.
+
+5. Nearly Normal Condition:
+The following histogram and box plot shows that this condition is met as the data is uni-modal and symmetric.
+
+```{r echo=FALSE, message = FALSE, warning = FALSE}
+library(dplyr)
+sparsh.sample2 <- sparsh %>% 
+  select(Date, Study, Semester) %>% # Select only the required rows
+  group_by(Semester)# Group by the semester variable
+```
+
+```{r echo=FALSE}
+Semester.1 <- sparsh.sample2 %>%
+  filter(Semester == "Winter2022") %>%
+  slice(1:10)# First 10 Sample from Winter Semester
+Semester.2 <- sparsh.sample2 %>%
+  filter(Semester == "Spring2022") %>%
+  slice(1:10)# First 10 Sample from Spring Semester
+Study.diff2 <- Semester.1$Study - Semester.2$Study # Difference of mean
+```
+
+```{r echo=FALSE}
+# Plotting Histogram and Box-plot for the data
+hist(Study.diff2, xlab="Study Hours Difference", 
+     main="Differences in Study Hours in each Semester")
+boxplot(Study.diff2, ylab="Study Hours Difference", 
+        main="Differences in Study Hours in each Semester")
+```
+
+##### Step 3: The Test
+```{r echo=FALSE}
+sparsh.paired2 <- t.test(Semester.1$Study, Semester.2$Study,
+       alternative="greater", mu=0,
+       var.equal=FALSE,
+       paired=TRUE)
+```
+The test is done using paired t.test function.
+
+##### Step 4: Decision
+The p-value for performing the test at $\alpha = 0.05$ is `r sparsh.paired2$p.value`. Since the p-value is greater than the $\alpha$, we fail to reject the null hypothesis. There is not enough evidence that I study more in the first semester compared to the second semester.
+
+$P-value =$ `r sparsh.paired2$p.value` $> \alpha = 0.05$
+
+## Conclusion
+
+According to the analysis I sleep for 7.9 hours, study for 5.5 hours, and work for 2.7 hours per day on average. My sleep hours are high as I try to always sleep for at least 8 hours per day. My work hour average is 2.7 hours per day as I can only work for 20 hours per week as I am an international student in Canada. My study hour on average per day is 5.5 hours which is less compared to what I initially thought but this may be due to my overnight work hours. Whenever I have work during the day I don't study much as compared to on other days when I don't have work.
+
+I usually have a schedule planned that I follow during the day. This means that I plan out every task that I have to complete by the end of the day. So, my day usually goes as I expect it to go. My work schedule for every day is fixed so I always have the same time that I go to and return from work. I always try to get 8 hours of sleep so my sleep schedules are also as I expect. But for my study schedule, I try to study whenever I don't have work or I am not sleeping. But for the most part, my days are spent exactly how I expect them to.
+
+The study time that I spent during my first semester and second semester is almost the same as the mean of the difference is 0.1. But there is a slight difference in how I spend my study hours between 2 semesters. During my first semester, the workload for classes and assignments was lighter compared to the second semester. So during my first semester, whenever I was free from my classes and assignments, I used to do an online course to improve my skills, mostly on DataCamp. But the classes and workload for the second semester are more compared to the first semester so I have not spent much time studying an online course during my second semester. But the overall time I spent studying remained the same.
+
+Since I work with my daily schedule in my mind. There is not much new insight for me from this analysis as my days go how I expect them to go. But I could allocate more time to my study time as my study, sleep, and work hours total combined on average gives me 16.1 hours per day. This analysis made me realize that I spent 7.9 hours per day on other things that do not involve study, sleep, and work. This means I could allocate 1 or 2 hours more to my study time and do some online courses to improve my skills.
